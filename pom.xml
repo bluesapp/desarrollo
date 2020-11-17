@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.6.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>co.com.medplus</groupId>
+    <artifactId>Medico</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Medico</name>
+    <description>CMR medico para medplus</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <artifactId>Medico</artifactId>    
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <docker.image.prefix>medplus</docker.image.prefix> 
+        <swagger.version>2.6.1</swagger.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.7.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>5.1.7.RELEASE</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+    </dependencies>
+
+    
+    <build>
+        <finalName>${environment}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+              <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.3.6</version>
+                <configuration>
+                    <repository>${project.artifactId}</repository>
+                    <buildArgs>
+                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+        
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+               <!-- <environment>${artifactId}_dev</environment>
+                <activatedProperties>dev</activatedProperties>
+                <server.port>9999</server.port>
+                <datasource.medico.environment>dev</datasource.medico.environment>
+                <datasource.medico.username>UsuarioGestor</datasource.medico.username>
+                <datasource.medico.password>Usr_#_1796</datasource.medico.password>
+                <datasource.medico.url>jdbc:sqlserver://medplus28;port=51986;databaseName=gestionriesgo</datasource.medico.url>
+                <datasource.medico.driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</datasource.medico.driver>
+                
+                <datasource.athenea.user>medicard</datasource.athenea.user>
+                <datasource.athenea.pass>medicard</datasource.athenea.pass>
+                <datasource.athenea.url>jdbc:sqlserver://MEDPLUS01;databaseName=cafesaludmpp</datasource.athenea.url>
+                <datasource.athenea.driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</datasource.athenea.driver> -->
+                
+                 <environment>${artifactId}_prod</environment>
+                <activatedProperties>prod</activatedProperties>
+                <server.port>8989</server.port>
+                <datasource.medico.environment>prod</datasource.medico.environment>
+                <datasource.medico.username>UserGestionRiesgo</datasource.medico.username>
+                <datasource.medico.password>G_r957#</datasource.medico.password>
+                <datasource.medico.url>jdbc:sqlserver://MEDPLUS01;port=59990;databaseName=gestionriesgo</datasource.medico.url>
+                <datasource.medico.driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</datasource.medico.driver>
+                
+                <datasource.athenea.user>userConecta</datasource.athenea.user>
+                <datasource.athenea.pass>##_Conecta951</datasource.athenea.pass>
+                <datasource.athenea.url>jdbc:sqlserver://cafemp03;databaseName=Cafesaludmpp</datasource.athenea.url>
+                <datasource.athenea.driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</datasource.athenea.driver>
+                
+            </properties>
+            <activation>
+                <property>
+                    <name>environment.type</name>
+                    <value>dev</value>
+                </property>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <environment>${artifactId}_prod</environment>
+                <activatedProperties>prod</activatedProperties>
+                <server.port>8989</server.port>
+                <datasource.medico.environment>prod</datasource.medico.environment>
+                <datasource.medico.username>UserGestionRiesgo</datasource.medico.username>
+                <datasource.medico.password>G_r957#</datasource.medico.password>
+                <datasource.medico.url>jdbc:sqlserver://MEDPLUS01;port=59990;databaseName=gestionriesgo</datasource.medico.url>
+                <datasource.medico.driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</datasource.medico.driver>
+                
+                <datasource.athenea.user>userConecta</datasource.athenea.user>
+                <datasource.athenea.pass>##_Conecta951</datasource.athenea.pass>
+                <datasource.athenea.url>jdbc:sqlserver://cafemp03;databaseName=Cafesaludmpp</datasource.athenea.url>
+                <datasource.athenea.driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</datasource.athenea.driver>
+                
+            </properties>
+            <activation>
+                <property>
+                    <name>environment.type</name>
+                    <value>prod</value>
+                </property>
+            </activation>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <environment>${artifactId}_test</environment>
+                <activatedProperties>test</activatedProperties>
+                <server.port>9999</server.port>
+                <datasource.medico.environment>test</datasource.medico.environment>
+                <datasource.medico.username>UsuarioGestor</datasource.medico.username>
+                <datasource.medico.password>Usr_#_1796</datasource.medico.password>
+                <datasource.medico.url>jdbc:sqlserver://medplus28;port=51986;databaseName=gestionriesgo</datasource.medico.url>
+                <datasource.medico.driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</datasource.medico.driver>
+            </properties>
+            <activation>
+                <property>
+                    <name>environment.type</name>
+                    <value>test</value>
+                </property>
+            </activation>
+        </profile>
+    </profiles>
+</project>
